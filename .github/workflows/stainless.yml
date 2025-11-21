@@ -2,20 +2,16 @@ name: Build SDKs for pull request
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - closed
+    types: [opened, synchronize, reopened, closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 env:
-  STAINLESS_ORG: YOUR_ORG
-  STAINLESS_PROJECT: YOUR_PROJECT
-  OAS_PATH: YOUR_OAS_PATH
+  STAINLESS_ORG: ${{ vars.STAINLESS_ORG }}
+  STAINLESS_PROJECT: ${{ vars.STAINLESS_PROJECT }}
+  OAS_PATH: ${{ vars.OAS_PATH }}
 
 jobs:
   preview:
@@ -26,13 +22,11 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Run preview builds
-        uses: stainless-api/upload-openapi-spec-action/preview@v1
+      - uses: stainless-api/upload-openapi-spec-action/preview@v1
         with:
           org: ${{ env.STAINLESS_ORG }}
           project: ${{ env.STAINLESS_PROJECT }}
@@ -46,13 +40,11 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Run merge build
-        uses: stainless-api/upload-openapi-spec-action/merge@v1
+      - uses: stainless-api/upload-openapi-spec-action/merge@v1
         with:
           org: ${{ env.STAINLESS_ORG }}
           project: ${{ env.STAINLESS_PROJECT }}
